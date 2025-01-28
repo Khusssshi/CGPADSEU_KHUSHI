@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CGPA Calculator</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+          body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f8ff;
+            text-align: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: auto;
+        }
+        h1 {
+            color: #007bff;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background: #007bff;
+            color: white;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 class="text-center text-primary">CGPA Calculator</h2>
+        <table class="table table-bordered text-center">
+            <thead>
+                <tr>
+                    <th>Subject</th>
+                    <th>Marks</th>
+                    <th>Credits</th>
+                    <th>Grade Point</th>
+                    <th>Grade</th>
+                </tr>
+            </thead>
+            <tbody id="subjects">
+                <tr>
+                    <td>Subject 1</td>
+                    <td><input type="number" class="form-control marks" value="" min="0" max="100"></td>
+                    <td><input type="number" class="form-control credits" value="" min="1"></td>
+                    <td class="grade-point"></td>
+                    <td class="grade"></td>
+                </tr>
+            </tbody>
+        </table>
+        <button class="btn btn-primary" onclick="addSubject()">+ Subject</button>
+        <button class="btn btn-danger" onclick="removeSubject()">- Subject</button>
+        <button class="btn btn-success" onclick="calculateCGPA()">Calculate</button>
+        <div class="mt-3 p-2 bg-light text-center" id="result"></div>
+    </div>
+
+    <script>
+        function addSubject() {
+            let table = document.getElementById("subjects");
+            let rowCount = table.rows.length + 1;
+            let row = table.insertRow();
+            row.innerHTML = `<td>Subject ${rowCount}</td>
+                             <td><input type="number" class="form-control marks" min="0" max="100"></td>
+                             <td><input type="number" class="form-control credits" min="1"></td>
+                             <td class="grade-point"></td>
+                             <td class="grade"></td>`;
+        }
+
+        function removeSubject() {
+            let table = document.getElementById("subjects");
+            if (table.rows.length > 1) table.deleteRow(-1);
+        }
+
+        function calculateCGPA() {
+            let marks = document.querySelectorAll(".marks");
+            let credits = document.querySelectorAll(".credits");
+            let gradePoints = document.querySelectorAll(".grade-point");
+            let grades = document.querySelectorAll(".grade");
+
+            let totalCredits = 0, weightedSum = 0;
+            marks.forEach((markInput, i) => {
+                let mark = parseFloat(markInput.value) || 0;
+                let credit = parseFloat(credits[i].value) || 0;
+                let gradePoint = getGradePoint(mark);
+                let grade = getGrade(mark);
+                
+                gradePoints[i].textContent = gradePoint;
+                grades[i].textContent = grade;
+                totalCredits += credit;
+                weightedSum += gradePoint * credit;
+            });
+
+            let cgpa = totalCredits > 0 ? (weightedSum / totalCredits).toFixed(2) : "N/A";
+            document.getElementById("result").textContent = "Your CGPA: " + cgpa;
+        }
+
+        function getGradePoint(marks) {
+            if (marks >= 90) return 10;
+            if (marks >= 80) return 9;
+            if (marks >= 70) return 8;
+            if (marks >= 60) return 7;
+            if (marks >= 50) return 6;
+            if (marks >= 45) return 5;
+            if (marks >= 40) return 4;
+            return 0;
+        }
+
+        function getGrade(marks) {
+            if (marks >= 90) return "O";
+            if (marks >= 80) return "A+";
+            if (marks >= 70) return "A";
+            if (marks >= 60) return "B+";
+            if (marks >= 50) return "B";
+            if (marks >= 45) return "C";
+            if (marks >= 40) return "P";
+            return "F";
+        }
+    </script>
+</body>
+</html>
